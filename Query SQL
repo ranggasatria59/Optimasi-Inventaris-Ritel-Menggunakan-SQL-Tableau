@@ -1,0 +1,59 @@
+Buat Database: Jika menggunakan MySQL atau PostgreSQL, buat database baru:
+
+sql
+CREATE DATABASE retail_inventory;
+Buat Tabel: Buat tabel untuk menyimpan data penjualan dan stok. Berikut contoh skema SQL:
+
+sql
+CREATE TABLE inventory (
+  Branch_ID INT,
+  Product_ID INT,
+  Product_Name VARCHAR(100),
+  Stock_Level INT,
+  Sales_Quantity INT,
+  Sales_Date DATE,
+  Restock_Level INT,
+  Category VARCHAR(50)
+);
+Impor Data ke Tabel SQL: Jika datanya dalam bentuk CSV, gunakan query SQL untuk mengimpor data:
+
+sql
+LOAD DATA INFILE 'path_to_your_csv_file.csv'
+INTO TABLE inventory
+FIELDS TERMINATED BY ',' 
+LINES TERMINATED BY '\n'
+IGNORE 1 ROWS
+(Branch_ID, Product_ID, Product_Name, Stock_Level, Sales_Quantity, Sales_Date, Restock_Level, Category);
+
+
+
+Langkah 3: Analisis dengan SQL
+Analisis Jumlah Penjualan per Cabang: Hitung total penjualan di setiap cabang untuk mengidentifikasi cabang dengan performa terbaik.
+
+sql
+SELECT Branch_ID, SUM(Sales_Quantity) AS Total_Sales
+FROM inventory
+GROUP BY Branch_ID
+ORDER BY Total_Sales DESC;
+Analisis Stok Berlebih: Temukan produk yang stoknya berlebih dan jarang terjual di tiap cabang.
+
+sql
+SELECT Product_ID, Product_Name, Branch_ID, Stock_Level
+FROM inventory
+WHERE Stock_Level > (SELECT AVG(Stock_Level) FROM inventory)
+  AND Sales_Quantity < 5;
+
+Analisis Restocking Optimal: Identifikasi barang yang perlu segera di-restock.
+
+sql
+SELECT Product_ID, Product_Name, Branch_ID, Stock_Level, Restock_Level
+FROM inventory
+WHERE Stock_Level < Restock_Level;
+Tren Penjualan: Lihat tren penjualan bulanan berdasarkan tanggal penjualan.
+
+sql
+SELECT DATE_FORMAT(Sales_Date, '%Y-%m') AS Month, SUM(Sales_Quantity) AS Monthly_Sales
+FROM inventory
+GROUP BY Month
+ORDER BY Month;
+
