@@ -1,0 +1,1 @@
+# Optimasi-Inventaris-Ritel-Menggunakan-SQL-Tableau
